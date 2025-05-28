@@ -176,10 +176,12 @@ async function editEvent(id) {
 
     if (newName && newDate && newTime) {
         try {
-            // Create date string in ISO format with local timezone offset
-            const [hours, minutes] = newTime.split(':');
-            const dateObj = new Date(newDate);
-            dateObj.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+            // Parse the time string and create a new date object
+            const [hours, minutes] = newTime.split(':').map(num => parseInt(num, 10));
+            const [year, month, day] = newDate.split('-').map(num => parseInt(num, 10));
+            
+            // Create new date object with the correct year, month, day, hours, and minutes
+            const dateObj = new Date(year, month - 1, day, hours, minutes);
             
             const response = await fetch(`${API_URL}/events/${id}`, {
                 method: 'PUT',
