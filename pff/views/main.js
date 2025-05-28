@@ -176,6 +176,11 @@ async function editEvent(id) {
 
     if (newName && newDate && newTime) {
         try {
+            // Create date string in ISO format with local timezone offset
+            const [hours, minutes] = newTime.split(':');
+            const dateObj = new Date(newDate);
+            dateObj.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+            
             const response = await fetch(`${API_URL}/events/${id}`, {
                 method: 'PUT',
                 headers: {
@@ -184,7 +189,7 @@ async function editEvent(id) {
                 body: JSON.stringify({
                     title: newName,
                     description: event.description,
-                    date: new Date(`${newDate}T${newTime}`),
+                    date: dateObj.toISOString(),
                     location: event.location
                 })
             });
